@@ -1,0 +1,12 @@
+body{
+    background-image: url("/home/claudius/Desktop/fireTape/public/jahwaterfall.jpg");
+    /* background-image: radial-gradient(red, yellow, green); */
+    background-repeat: no-repeat;
+    /* height: 500px; */
+    /* background-position: center; */
+    background-size: cover;
+}
+
+h1 {
+    color: red;
+}
