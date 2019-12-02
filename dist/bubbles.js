@@ -37,12 +37,12 @@ d3.json('http://ws.audioscrobbler.com/2.0/?method=geo.gettoptracks&country=jamai
         .text(function(d) {
             return d.name + ": " + d.listeners;
     });
-    debugger
+    // debugger
+    //how do i add a range here? getting an attribute error with the length
     node.append('circle')
     .attr('r', function(d) {
         return d.r;
     })
-    .range([0,50])
     .style('fill', function(d,i){
         return color(i);
     });
