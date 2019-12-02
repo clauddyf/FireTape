@@ -6,8 +6,8 @@ container.setAttribute('class','container')
 app.appendChild(container)
 var request = new XMLHttpRequest()
 
-request.open('GET', 'http://ws.audioscrobbler.com/2.0/?method=geo.gettoptracks&country=jamaica&api_key=a0d411fa7c676669092342d66c4913d8&format=json&limit=8')
-
+// const lastfmData = request.open('GET', 'http://ws.audioscrobbler.com/2.0/?method=geo.gettoptracks&country=jamaica&api_key=a0d411fa7c676669092342d66c4913d8&format=json&limit=8')
+// http://ws.audioscrobbler.com/2.0/?method=tag.gettoptracks&tag=disco&api_key=a0d411fa7c67669092342d66c4913d8&format=json
 request.onload = function() {
     // debugger
     var data = JSON.parse(this.response)
