@@ -3,77 +3,180 @@
 // width = 500 - margin.left - margin.right,
 // height = 420 - margin.top - margin.bottom;
 
-d3.json('http://ws.audioscrobbler.com/2.0/?method=geo.gettoptracks&country=jamaica&api_key=a0d411fa7c676669092342d66c4913d8&format=json&limit=8', function(data) {
-    
-    var diameter = 600;
-    var color = d3.scaleOrdinal(d3.schemeCategory20);
-    var bubble = d3.pack(data)
+
+
+var diameter = 960,
+    format = d3.format(',d'),
+    color = d3.scaleOrdinal(d3.schemeCategory20c);
+
+var bubble = d3.pack()
     .size([diameter,diameter])
     .padding(1.5);
-    
-    var svg = d3.select("#root")
-    .append("svg")
-    .attr("width", diameter)
-    .attr("height", diameter)
+
+var svg = d3.select('#root')
+    .append('svg')
+    .attr('width',diameter)
+    .attr('height',diameter)
     .attr('class','bubble');
+
+d3.json('http://ws.audioscrobbler.com/2.0/?method=geo.gettoptracks&country=jamaica&api_key=a0d411fa7c676669092342d66c4913d8&format=json&limit=8', function(error, data) {
+    if (error) throw error;
+    var root = d3.hierarchy(classes(data))
+    .sum(function(d) { return d.value; })
+    .sort(function(a,b) { return b.value - a.value; })
     
-    
-    // debugger
-    var nodes = d3.hierarchy(data)
-        .sum(function(d) {return d.listeners; });
-    
+    bubble(root);
+    debugger
     var node = svg.selectAll('.node')
-        .data(bubble(nodes).descendants())
-        .enter()
-        .filter(function(d){
-            return !d.children
-    })
-        .append('g')
-        .attr('class','node')
-        .attr('transform',function(d) {
-            return 'translate(' + d.x + ',' + d.y + ')';
-    });
-    node.append('name')
-        .text(function(d) {
-            return d.name + ": " + d.listeners;
-    });
-    // debugger
-    //how do i add a range here? getting an attribute error with the length
+    .data(root.children)
+    .enter().append('g')
+    .attr('class','node')
+    .attr('transform', function(d) { return 'translate(' + d.x + ',' + d.y + ')'; });
+    
+    node.append('title')
+        .text(function(d) {return d.data.className + ": " + format(d.value); });
+    
     node.append('circle')
-    .attr('r', function(d) {
-        return d.r;
-    })
-    .style('fill', function(d,i){
-        return color(i);
-    });
-    
+        .attr('r', function(d) { return d.r; })
+        .style('fill', function(d) {
+            return color(d.data.packageName);
+        });
+
     node.append('text')
-        .attr('dy','.2em')
-        .style('text-anchor','middle')
-        .text(function(d) {
-            return d.data.name.substring(0, d.r /3);
-        })
-        .attr("font-family", "sans-serif")
-                .attr("font-size", function(d){
-                    return d.r/5;
-                })
-                .attr("fill", "white");
-    
-            node.append("text")
-                .attr("dy", "1.3em")
-                .style("text-anchor", "middle")
-                .text(function(d) {
-                    return d.data.Count;
-                })
-                .attr("font-family",  "Gill Sans", "Gill Sans MT")
-                .attr("font-size", function(d){
-                    return d.r/5;
-                })
-                .attr("fill", "white");
-    
-            d3.select(self.frameElement)
-                .style("height", diameter + "px");
+        .attr('dy', '.3em')
+        .style('text-anchor', 'middle')
+        .text(function(d) { return d.data.className.substring(0, d.r / 3); });
+
 });
+
+function classes(root) {
+    var classes = [];
+
+    function recurse(name, node) {
+        if (node.children) node.children.forEach(function(child) { recurse(node.name, child); });
+        else classes.push( {
+            packageName:name,
+            className: node.name,
+            value: node.size
+        });
+    }
+
+    recurse(null,root);
+    return { children: classes };
+}
+
+d3.select(self.frameElement).style('height', diameter + 'px');
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+// d3.json('http://ws.audioscrobbler.com/2.0/?method=geo.gettoptracks&country=jamaica&api_key=a0d411fa7c676669092342d66c4913d8&format=json&limit=8', function(data) {
+    
+//     var diameter = 600;
+//     var color = d3.scaleOrdinal(d3.schemeCategory20);
+//     var bubble = d3.pack(data)
+//     .size([diameter,diameter])
+//     .padding(1.5);
+    
+//     var svg = d3.select("#root")
+//     .append("svg")
+//     .attr("width", diameter)
+//     .attr("height", diameter)
+//     .attr('class','bubble');
+    
+    
+//     // debugger
+//     var nodes = d3.hierarchy(data)
+//         .sum(function(d) {return d.listeners; });
+    
+//     var node = svg.selectAll('.node')
+//         .data(bubble(nodes).descendants())
+//         .enter()
+//         .filter(function(d){
+//             return !d.children
+//     })
+//         .append('g')
+//         .attr('class','node')
+//         .attr('transform',function(d) {
+//             return 'translate(' + d.x + ',' + d.y + ')';
+//     });
+//     node.append('name')
+//         .text(function(d) {
+//             return d.name + ": " + d.listeners;
+//     });
+//     // debugger
+//     //how do i add a range here? getting an attribute error with the length
+//     node.append('circle')
+//     .attr('r', function(d) {
+//         return d.r;
+//     })
+//     .style('fill', function(d,i){
+//         return color(i);
+//     });
+    
+//     node.append('text')
+//         .attr('dy','.2em')
+//         .style('text-anchor','middle')
+//         .text(function(d) {
+//             return d.data.name.substring(0, d.r /3);
+//         })
+//         .attr("font-family", "sans-serif")
+//                 .attr("font-size", function(d){
+//                     return d.r/5;
+//                 })
+//                 .attr("fill", "white");
+    
+//             node.append("text")
+//                 .attr("dy", "1.3em")
+//                 .style("text-anchor", "middle")
+//                 .text(function(d) {
+//                     return d.data.Count;
+//                 })
+//                 .attr("font-family",  "Gill Sans", "Gill Sans MT")
+//                 .attr("font-size", function(d){
+//                     return d.r/5;
+//                 })
+//                 .attr("fill", "white");
+    
+//             d3.select(self.frameElement)
+//                 .style("height", diameter + "px");
+// });
 
 
 
