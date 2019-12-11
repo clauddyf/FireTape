@@ -103,7 +103,7 @@
 
 //THEEEEEEE FRICKINNNNNNNNNN WINNNNNERRRRRRRRRR
 
-var diameter = 522;
+var diameter = 900;
 var width = 960,
 height = 500
 // var color = d3.scaleOrdinal(d3.schemeCategory20);
@@ -168,18 +168,20 @@ d3.json('http://ws.audioscrobbler.com/2.0/?method=geo.gettoptracks&country=jamai
             return d.y;
         })
         .transition()
+            .attr('transform','translate(25,50)')
             .ease('elastic')
             .duration(3000)
             .style("fill", function(d) { return color(d.value); });
-            bubbles.append('text')
-            .attr('x', function(d) {
-                return d.x
-            })
-            .attr('y',function(d) {
-                return d.y + 5;
-            })
-            .attr('text-anchor', 'middle')
-            .text(function(d){
+
+    bubbles.append('text')
+        .attr('x', function(d) {
+            return d.x
+        })
+        .attr('y',function(d) {
+            return d.y + 5;
+        })
+        .attr('text-anchor', 'middle')
+        .text(function(d){
                 // debugger
             return d['value'];
         })
@@ -197,6 +199,10 @@ d3.json('http://ws.audioscrobbler.com/2.0/?method=geo.gettoptracks&country=jamai
             .charge(charge) // <- Using the charge function in the force layout
             .gravity(-0.01)
             .friction(0.9)
+        force.on('tick',function(){
+            nodes.attr("cx", function(d) { return d.x; })
+            .attr("cy", function(d) { return d.y; });
+        })
 
 
 
