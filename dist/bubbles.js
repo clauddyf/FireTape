@@ -1,193 +1,207 @@
 
-var width = 960,
-height = 500
+// var width = 960,
+// height = 500
 
-var svg = d3.select("body").append("svg")
-.attr("width", width)
-.attr("height", height);
+// var svg = d3.select("body").append("svg")
+// .attr("width", width)
+// .attr("height", height);
 
-var force = d3.layout.force()
-.gravity(0.1)
-.distance(100)
-.charge(-700)
-.size([width, height]);
-var color = function (group) { 
-if (group == 1) {
-    return "#aaa"
-} else if (group == 2) {
-    return "#fbc280"
-} else {
-    return "#405275"
-}
-}
-d3.json('http://ws.audioscrobbler.com/2.0/?method=geo.gettoptracks&country=jamaica&api_key=a0d411fa7c676669092342d66c4913d8&format=json&limit=15', function (error, json) {
-if (error) throw error;
-debugger
-force
-    .nodes(json.tracks)
-    .start();
+// var force = d3.layout.force()
+// .gravity(0.1)
+// .distance(100)
+// .charge(-700)
+// .size([width, height]);
+// var color = function (group) { 
+// if (group == 1) {
+//     return "#aaa"
+// } else if (group == 2) {
+//     return "#fbc280"
+// } else {
+//     return "#405275"
+// }
+// }
+// d3.json('http://ws.audioscrobbler.com/2.0/?method=geo.gettoptracks&country=jamaica&api_key=a0d411fa7c676669092342d66c4913d8&format=json&limit=15', function (error, json) {
+// if (error) throw error;
+// debugger
+// force
+//     .nodes(json.tracks)
+//     .start();
 
-var link = svg.selectAll(".link")
-    .data(json.links)
-    .enter().append("line")
-    .attr("class", "link");
+// var link = svg.selectAll(".link")
+//     .data(json.links)
+//     .enter().append("line")
+//     .attr("class", "link");
 
-var node = svg.selectAll(".node")
-    .data(json.nodes)
-    .enter().append("g")
-    .attr("class", "node")
-    .call(force.drag);
-node.append('circle')
-    .attr('r', 13)
-    .attr('fill', function (d) {
-        return color(d.group);
-    });
-
-node.append("text")
-    .attr("dx", -18)
-    .attr("dy", 8)
-    .style("font-family", "overwatch")
-    .style("font-size", "18px") 
-
-    .text(function (d) {
-        return d.name
-    });
-
-force.on("tick", function () {
-    link.attr("x1", function (d) {
-            return d.source.x;
-        })
-        .attr("y1", function (d) {
-            return d.source.y;
-        })
-        .attr("x2", function (d) {
-            return d.target.x;
-        })
-        .attr("y2", function (d) {
-            return d.target.y;
-        }); 
-    node.attr("transform", function (d) { 
-        return "translate(" + d.x + "," + d.y + ")";
-    });
-}); 
-});
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-// //THEEEEEEE FRICKINNNNNNNNNN WINNNNNERRRRRRRRRR
-
-// var diameter = 522;
-// // var color = d3.scaleOrdinal(d3.schemeCategory20);
-// var color = d3.scale.category20();
-// // debugger
-// var bubble = d3.layout.pack()
-// .size([diameter,diameter])
-// .padding(2.2);
-
-// var svg = d3.select('body')
-// .append('svg')
-// .attr('width',diameter)
-// .attr('height', diameter)
-// .attr('class','bubble');
-
-// d3.json('http://ws.audioscrobbler.com/2.0/?method=geo.gettoptracks&country=jamaica&api_key=a0d411fa7c676669092342d66c4913d8&format=json&limit=15', function(error, tracks) {
-//     // var data = music.tracks
-//     // debugger
-//     var counts = [];
-//     tracks.tracks.track.forEach(function(d) {
-//         // debugger
-//         arr = d.listeners
-//         counts.push(arr)
-//     })
-//     console.log(counts)
-
-//     var data = [];
-//     for(var key in counts) {
-//         var val = counts[key];
-//         data.push({
-//             count: val,
-//             track: key
-//         });
-//     }
-//     console.log(data)
-
-//     data = data.map(function(d){
-//         d.value = +d['count'];
-//         return d;
+// var node = svg.selectAll(".node")
+//     .data(json.nodes)
+//     .enter().append("g")
+//     .attr("class", "node")
+//     .call(force.drag);
+// node.append('circle')
+//     .attr('r', 13)
+//     .attr('fill', function (d) {
+//         return color(d.group);
 //     });
 
-//     var nodes = bubble.nodes({
-//         children: data
-//     }).filter(function(d) {
-//         return !d.children;
-//     })
+// node.append("text")
+//     .attr("dx", -18)
+//     .attr("dy", 8)
+//     .style("font-family", "overwatch")
+//     .style("font-size", "18px") 
 
-//     var bubbles = svg.append('g')
-//         .attr("transform", "translate(0,0)")
-//         .selectAll('.bubble')
-//         .data(nodes)
-//         .enter();
+//     .text(function (d) {
+//         return d.name
+//     });
 
-//     bubbles.append('circle')
-//         .attr('r',function(d){
-//             return d.r;
+// force.on("tick", function () {
+//     link.attr("x1", function (d) {
+//             return d.source.x;
 //         })
-//         .attr('cx',function(d){
-//             return d.x;
+//         .attr("y1", function (d) {
+//             return d.source.y;
 //         })
-//         .attr('cy',function(d){
-//             return d.y;
+//         .attr("x2", function (d) {
+//             return d.target.x;
 //         })
-//         .transition()
-//             .ease('elastic')
-//             .duration(3000)
-//             .style("fill", function(d) { return color(d.value); });
-//             bubbles.append('text')
-//             .attr('x', function(d) {
-//                 return d.x
-//             })
-//             .attr('y',function(d) {
-//                 return d.y + 5;
-//             })
-//             .attr('text-anchor', 'middle')
-//             .text(function(d){
-//                 // debugger
-//             return d['value'];
-//         })
-//         .style({
-//             'fill':'white',
-//             "font-family":"Helvetica Neue, Helvetica, Arial, san-serif",
-//             "font-size": "9px"
-//         })
-//     // debugger
+//         .attr("y2", function (d) {
+//             return d.target.y;
+//         }); 
+//     node.attr("transform", function (d) { 
+//         return "translate(" + d.x + "," + d.y + ")";
+//     });
+// }); 
 // });
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+//THEEEEEEE FRICKINNNNNNNNNN WINNNNNERRRRRRRRRR
+
+var diameter = 522;
+var width = 960,
+height = 500
+// var color = d3.scaleOrdinal(d3.schemeCategory20);
+var color = d3.scale.category20();
+// debugger
+var bubble = d3.layout.pack()
+.size([diameter,diameter])
+.padding(2.2);
+
+var svg = d3.select('body')
+.append('svg')
+.attr('width',diameter)
+.attr('height', diameter)
+.attr('class','bubble');
+
+d3.json('http://ws.audioscrobbler.com/2.0/?method=geo.gettoptracks&country=jamaica&api_key=a0d411fa7c676669092342d66c4913d8&format=json&limit=15', function(error, tracks) {
+    // var data = music.tracks
+    // debugger
+    var counts = [];
+    tracks.tracks.track.forEach(function(d) {
+        // debugger
+        arr = d.listeners
+        counts.push(arr)
+    })
+    console.log(counts)
+
+    var data = [];
+    for(var key in counts) {
+        var val = counts[key];
+        data.push({
+            count: val,
+            track: key
+        });
+    }
+    console.log(data)
+
+    data = data.map(function(d){
+        d.value = +d['count'];
+        return d;
+    });
+
+    var nodes = bubble.nodes({
+        children: data
+    }).filter(function(d) {
+        return !d.children;
+    })
+
+    var bubbles = svg.append('g')
+        .attr("transform", "translate(0,0)")
+        .selectAll('.bubble')
+        .data(nodes)
+        .enter();
+
+    bubbles.append('circle')
+        .attr('r',function(d){
+            return d.r;
+        })
+        .attr('cx',function(d){
+            return d.x;
+        })
+        .attr('cy',function(d){
+            return d.y;
+        })
+        .transition()
+            .ease('elastic')
+            .duration(3000)
+            .style("fill", function(d) { return color(d.value); });
+            bubbles.append('text')
+            .attr('x', function(d) {
+                return d.x
+            })
+            .attr('y',function(d) {
+                return d.y + 5;
+            })
+            .attr('text-anchor', 'middle')
+            .text(function(d){
+                // debugger
+            return d['value'];
+        })
+        .style({
+            'fill':'white',
+            "font-family":"Helvetica Neue, Helvetica, Arial, san-serif",
+            "font-size": "9px"
+        })
+        function charge(d) {
+            return -Math.pow(d.radius, 2.0) / 8;
+          }
+          var force = d3.layout
+            .force()
+            .size([width, height])
+            .charge(charge) // <- Using the charge function in the force layout
+            .gravity(-0.01)
+            .friction(0.9)
+
+
+
+    // debugger
+});
 
 
 
