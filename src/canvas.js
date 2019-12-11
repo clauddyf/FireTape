@@ -1,5 +1,5 @@
 export const canvas = () => {
-    var svgContainer = d3.select(".circles").append("svg")
+    var svgContainer = d3.select(".circlezz").append("svg")
                                         .attr("width",200)
                                         .attr("height",200);
 
@@ -12,7 +12,7 @@ export const canvas = () => {
 }
 
 export const canvas2 = () => {
-    var svgContainer = d3.select(".circles").append("svg")
+    var svgContainer = d3.select(".circlezz").append("svg")
                                         .attr("width",200)
                                         .attr("height",200);
 
