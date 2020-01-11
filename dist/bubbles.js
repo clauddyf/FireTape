@@ -1,76 +1,248 @@
 
-// var width = 960,
-// height = 500
 
-// var svg = d3.select("body").append("svg")
-// .attr("width", width)
-// .attr("height", height);
+const height = 600;
+const width = 1100;
+d3.select('#root')
+.append('svg')
+.attr('height', height)
+.attr('width', width)
+// .append('image')
 
-// var force = d3.layout.force()
-// .gravity(0.1)
-// .distance(100)
-// .charge(-700)
-// .size([width, height]);
-// var color = function (group) { 
-// if (group == 1) {
-//     return "#aaa"
-// } else if (group == 2) {
-//     return "#fbc280"
-// } else {
-//     return "#405275"
-// }
-// }
-// d3.json('http://ws.audioscrobbler.com/2.0/?method=geo.gettoptracks&country=jamaica&api_key=a0d411fa7c676669092342d66c4913d8&format=json&limit=15', function (error, json) {
-// if (error) throw error;
+// let rawData = generateRandomData();
+d3.json('http://ws.audioscrobbler.com/2.0/?method=geo.gettoptracks&country=jamaica&api_key=a0d411fa7c676669092342d66c4913d8&format=json&limit=2').then(function(tracks) {
+    const velocityDecay = 0.15;
+    const forceStrength = 0.03;
+    
+    let nodes;
+    let bubbles;
+    let radiusScale;
+    let colorScale;
+    let heightScale;
+    
+    radiusScale = d3.scaleLinear()
+        .domain([0, 500])
+        .range([5, 30]);
+    
+    colorScale = d3.scaleSequential()
+        .domain([0, 100])
+        .interpolator(d3.interpolateRainbow);
+    
+    heightScale = d3.scaleLinear()
+        .domain([0, 100])
+        .range([0, height]);
+    arrTracks = tracks.tracks.track
+    nodes = arrTracks.map(d => {
+        debugger
+        return {
+            radius: radiusScale(d.listeners/400),
+            fill: Object.values(d.image[0])[0],
+            x: Math.random() * width,
+            y: heightScale((d.listeners/400) )/*  Math.random() * height */
+        }
+    })
+    debugger
+    
+    bubbles = d3.select('#root svg')
+        .selectAll('circle')
+        .data(nodes)
+        .enter()
+        .append('circle')
+        .attr('r', d => { return d.radius })
+        .attr('fill', d => 'blue')
+        .attr('stroke', d => { return d3.rgb('blue').darker() })
+        .call(d3.drag()
+            .on('start', dragStarted)
+            .on('drag', dragged)
+            .on('end', dragEnded)
+            )
+    bubble = bubbles
+            .append('image')
+    debugger
+    let forceSimulation;
+    
+    forceSimulation = d3.forceSimulation()
+        .nodes(nodes)
+        .velocityDecay(velocityDecay)
+        .on('tick', ticked)
+        .force('x', d3.forceX().strength(forceStrength).x(width / 2))
+        .force('y', d3.forceY().strength(forceStrength).y(height / 2))
+        .force("charge", d3.forceManyBody().strength(charge))
+    
+    
+    function dragStarted(d) {
+        console.log('start');
+        forceSimulation.alphaTarget(0.3).restart()
+    }
+    function dragged(d) {
+        console.log('drag');
+        /* bubbles.attr("cx", d.x = d3.event.x).attr("cy", d.y = d3.event.y); */
+        d.fx = d3.event.x
+        d.fy = d3.event.y
+    }
+    
+    function dragEnded(d) {
+        console.log('end');
+        delete d.fx;
+        delete d.fy;
+        forceSimulation.alphaTarget(0);
+    }
+    
+    function ticked() {
+        bubbles
+            .attr("cx", function (d) {
+                return d.x;
+            })
+            .attr("cy", function (d) {
+                return d.y;
+            });
+    }
+    
+    function radius(d) {
+        return d.radius + 1
+    }
+    
+    function charge(d) {
+        return -Math.pow(d.radius, 2) * forceStrength;
+    }
+    
+    
+    function generateRandomData() {
+        const data = [];
+        for (let i = 0; i < 200; i++) {
+            data.push(
+                { randomNumber: Math.round(Math.random() * 100) }
+            )
+        }
+        return data;
+    }
+    
+})
+
+
+// const height = 600;
+// const width = 1000;
+// const velocityDecay = 0.15;
+// const forceStrength = 0.03;
+
+// let nodes;
+// let bubbles;
+
+// let rawData = generateRandomData();
+// let forceSimulation;
+
+// let radiusScale;
+// let colorScale;
+// let heightScale;
+
+
+// radiusScale = d3.scaleLinear()
+//     .domain([0, 100])
+//     .range([5, 30]);
+
+// colorScale = d3.scaleSequential()
+//     .domain([0, 100])
+//     .interpolator(d3.interpolateRainbow);
+
+// heightScale = d3.scaleLinear()
+//     .domain([0, 100])
+//     .range([0, height]);
+
+// nodes = rawData.map(d => {
+//     debugger
+//     return {
+//         radius: radiusScale(d.randomNumber),
+//         fill: colorScale(d.randomNumber),
+//         x: Math.random() * width,
+//         y: heightScale(d.randomNumber)/*  Math.random() * height */
+//     }
+// })
+
+// /* console.log('node ', nodes);
+// console.log('data', rawData); */
+
+// /* nodes.sort((a, b) => b.radius - a.radius) */
+
+
+
+
+// d3.select('#root')
+//     .append('svg')
+//     .attr('height', height)
+//     .attr('width', width)
+
 // debugger
-// force
-//     .nodes(json.tracks)
-//     .start();
+// bubbles = d3.select('#root svg')
+//     .selectAll('circle')
+//     .data(nodes)
+//     .enter()
+//     .append('circle')
+//     .attr('r', d => { return d.radius })
+//     .attr('fill', d => 'salmon')
+//     .attr('stroke', d => { return d3.rgb('salmon').darker() })
+//     .call(d3.drag()
+//         .on('start', dragStarted)
+//         .on('drag', dragged)
+//         .on('end', dragEnded)
+//     )
 
-// var link = svg.selectAll(".link")
-//     .data(json.links)
-//     .enter().append("line")
-//     .attr("class", "link");
 
-// var node = svg.selectAll(".node")
-//     .data(json.nodes)
-//     .enter().append("g")
-//     .attr("class", "node")
-//     .call(force.drag);
-// node.append('circle')
-//     .attr('r', 13)
-//     .attr('fill', function (d) {
-//         return color(d.group);
-//     });
 
-// node.append("text")
-//     .attr("dx", -18)
-//     .attr("dy", 8)
-//     .style("font-family", "overwatch")
-//     .style("font-size", "18px") 
+// forceSimulation = d3.forceSimulation()
+//     .nodes(nodes)
+//     .velocityDecay(velocityDecay)
+//     .on('tick', ticked)
+//     .force('x', d3.forceX().strength(forceStrength).x(width / 2))
+//     .force('y', d3.forceY().strength(forceStrength).y(height / 2))
+//     .force("charge", d3.forceManyBody().strength(charge))
 
-//     .text(function (d) {
-//         return d.name
-//     });
 
-// force.on("tick", function () {
-//     link.attr("x1", function (d) {
-//             return d.source.x;
+// function dragStarted(d) {
+//     console.log('start');
+//     forceSimulation.alphaTarget(0.3).restart()
+// }
+// function dragged(d) {
+//     console.log('drag');
+//     /* bubbles.attr("cx", d.x = d3.event.x).attr("cy", d.y = d3.event.y); */
+//     d.fx = d3.event.x
+//     d.fy = d3.event.y
+// }
+
+// function dragEnded(d) {
+//     console.log('end');
+//     delete d.fx;
+//     delete d.fy;
+//     forceSimulation.alphaTarget(0);
+// }
+
+// function ticked() {
+//     bubbles
+//         .attr("cx", function (d) {
+//             return d.x;
 //         })
-//         .attr("y1", function (d) {
-//             return d.source.y;
-//         })
-//         .attr("x2", function (d) {
-//             return d.target.x;
-//         })
-//         .attr("y2", function (d) {
-//             return d.target.y;
-//         }); 
-//     node.attr("transform", function (d) { 
-//         return "translate(" + d.x + "," + d.y + ")";
-//     });
-// }); 
-// });
+//         .attr("cy", function (d) {
+//             return d.y;
+//         });
+// }
+
+// function radius(d) {
+//     return d.radius + 1
+// }
+
+// function charge(d) {
+//     return -Math.pow(d.radius, 2) * forceStrength;
+// }
+
+
+// function generateRandomData() {
+//     const data = [];
+//     for (let i = 0; i < 200; i++) {
+//         data.push(
+//             { randomNumber: Math.round(Math.random() * 100) }
+//         )
+//     }
+//     return data;
+// }
+
 
 
 
@@ -103,297 +275,109 @@
 
 //THEEEEEEE FRICKINNNNNNNNNN WINNNNNERRRRRRRRRR
 
-var diameter = 900;
-var width = 960,
-height = 500
-// var color = d3.scaleOrdinal(d3.schemeCategory20);
-var color = d3.scale.category20();
-// debugger
-var bubble = d3.layout.pack()
-.size([diameter,diameter])
-.padding(2.2);
+// var diameter = 900;
+// var width = 960,
+// height = 500
+// // var color = d3.scaleOrdinal(d3.schemeCategory20);
+// var color = d3.scale.category20();
+// // debugger
+// var bubble = d3.layout.pack()
+// .size([diameter,diameter])
+// .padding(2.2);
 
-var svg = d3.select('body')
-.append('svg')
-.attr('width',diameter)
-.attr('height', diameter)
-.attr('class','bubble');
+// var svg = d3.select('body')
+// .append('svg')
+// .attr('width',diameter)
+// .attr('height', diameter)
+// .attr('class','bubble');
 
-d3.json('http://ws.audioscrobbler.com/2.0/?method=geo.gettoptracks&country=jamaica&api_key=a0d411fa7c676669092342d66c4913d8&format=json&limit=15', function(error, tracks) {
-    // var data = music.tracks
-    // debugger
-    var counts = [];
-    tracks.tracks.track.forEach(function(d) {
-        // debugger
-        arr = d.listeners
-        counts.push(arr)
-    })
-    console.log(counts)
-
-    var data = [];
-    for(var key in counts) {
-        var val = counts[key];
-        data.push({
-            count: val,
-            track: key
-        });
-    }
-    console.log(data)
-
-    data = data.map(function(d){
-        d.value = +d['count'];
-        return d;
-    });
-
-    var nodes = bubble.nodes({
-        children: data
-    }).filter(function(d) {
-        return !d.children;
-    })
-
-    var bubbles = svg.append('g')
-        .attr("transform", "translate(0,0)")
-        .selectAll('.bubble')
-        .data(nodes)
-        .enter();
-
-    bubbles.append('circle')
-        .attr('r',function(d){
-            return d.r;
-        })
-        .attr('cx',function(d){
-            return d.x;
-        })
-        .attr('cy',function(d){
-            return d.y;
-        })
-        .transition()
-            .attr('transform','translate(25,50)')
-            .ease('elastic')
-            .duration(3000)
-            .style("fill", function(d) { return color(d.value); });
-
-    bubbles.append('text')
-        .attr('x', function(d) {
-            return d.x
-        })
-        .attr('y',function(d) {
-            return d.y + 5;
-        })
-        .attr('text-anchor', 'middle')
-        .text(function(d){
-                // debugger
-            return d['value'];
-        })
-        .style({
-            'fill':'white',
-            "font-family":"Helvetica Neue, Helvetica, Arial, san-serif",
-            "font-size": "9px"
-        })
-        function charge(d) {
-            return -Math.pow(d.radius, 2.0) / 8;
-          }
-          var force = d3.layout
-            .force()
-            .size([width, height])
-            .charge(charge) // <- Using the charge function in the force layout
-            .gravity(-0.01)
-            .friction(0.9)
-        force.on('tick',function(){
-            nodes.attr("cx", function(d) { return d.x; })
-            .attr("cy", function(d) { return d.y; });
-        })
-
-
-
-    // debugger
-});
-
-
-
-// d3.json('http://ws.audioscrobbler.com/2.0/?method=geo.gettoptracks&country=jamaica&api_key=a0d411fa7c676669092342d66c4913d8&format=json&limit=8', function(error, data) {
-//     var diameter = 600;
-//     var color = d3.scaleOrdinal(d3.schemeCategory20);
-
-//     var bubble = d3.pack(data.tracks)
-//         .size([diameter, diameter])
-//         .padding(1.5);
-
-//     var svg = d3.select("body")
-//         .append("svg")
-//         .attr("width", diameter)
-//         .attr("height", diameter)
-//         .attr("class", "bubble");
-
-//         debugger
-// var nodes = d3.hierarchy(data.tracks)
-//     .sum(data.tracks.track.forEach(function(d) {
-//         debugger
-//         return parseInt(d.listeners);
-//     }));
-
-// var node = svg.selectAll('.node')
-// .data(bubble(nodes).descendants())
-// .enter()
-// .filter(function(d){
-//     return !d.children
-// })
-// .append('g')
-// .attr('class', 'node')
-// .attr('transform', function(d){
+// d3.json('http://ws.audioscrobbler.com/2.0/?method=geo.gettoptracks&country=jamaica&api_key=a0d411fa7c676669092342d66c4913d8&format=json&limit=15', function(error, tracks) {
+//     // var data = music.tracks
 //     // debugger
-//     return 'translate(' + d.x + "," + d.y + ")";
-// })
-
-// node.append('title')
-// .text(function(d) {
-//     // debugger
-//     return d.name
-// })
-
-// node.append('circle')
-// .attr('r',function(d) {
-//     // debugger
-//     return d.r;
-// })
-// .style('fill',function(d,i) {
-    
-//     return color(i);
-// })
-// })
-
-
-
-
-
-
-// var margin = {top: 10, right: 20, bottom: 30, left: 50},
-// width = 500 - margin.left - margin.right,
-// height = 420 - margin.top - margin.bottom;
-
-
-// dataset = {
-//     "children": [{"Name":"Olives","Count":4319},
-//         {"Name":"Tea","Count":4159},
-//         {"Name":"Mashed Potatoes","Count":2583},
-//         {"Name":"Boiled Potatoes","Count":2074},
-//         {"Name":"Milk","Count":1894},
-//         {"Name":"Chicken Salad","Count":1809},
-//         {"Name":"Vanilla Ice Cream","Count":1713},
-//         {"Name":"Cocoa","Count":1636},
-//         {"Name":"Lettuce Salad","Count":1566},
-//         {"Name":"Lobster Salad","Count":1511},
-//         {"Name":"Chocolate","Count":1489},
-//         {"Name":"Apple Pie","Count":1487},
-//         {"Name":"Orange Juice","Count":1423},
-//         {"Name":"American Cheese","Count":1372},
-//         {"Name":"Green Peas","Count":1341},
-//         {"Name":"Assorted Cakes","Count":1331},
-//         {"Name":"French Fried Potatoes","Count":1328},
-//         {"Name":"Potato Salad","Count":1306},
-//         {"Name":"Baked Potatoes","Count":1293},
-//         {"Name":"Roquefort","Count":1273},
-//         {"Name":"Stewed Prunes","Count":1268}]
-// };
-
-// var diameter = 600;
-// var color = d3.scaleOrdinal(d3.schemeCategory20);
-// var bubble = d3.pack(dataset)
-// .size([diameter, diameter])
-// .padding(1.5);
-
-// var svg = d3.select("body")
-// .append("svg")
-// .attr("width", diameter)
-// .attr("height", diameter)
-// .attr("class", "bubble");
-// debugger
-// var nodes = d3.hierarchy(dataset)
-// .sum(function(d){
-//     return d.Count; 
-// });
-
-// var node = svg.selectAll(".node")
-// .data(bubble(nodes).descendants())
-// .enter()
-// .filter(function(d){
-//     return  !d.children
-// })
-// .append("g")
-// .attr("class", "node")
-// .attr("transform", function(d) {
-//     return "translate(" + d.x + "," + d.y + ")";
-// });
-
-// debugger
-// node.append("title")
-//     .text(function(d) {
+//     var counts = [];
+//     tracks.tracks.track.forEach(function(d) {
 //         // debugger
-//         return d.Name + ": " + d.Count;
+//         arr = d.listeners
+//         counts.push(arr)
+//     })
+//     console.log(counts)
+
+//     var data = [];
+//     for(var key in counts) {
+//         var val = counts[key];
+//         data.push({
+//             count: val,
+//             track: key
+//         });
+//     }
+//     console.log(data)
+
+//     data = data.map(function(d){
+//         d.value = +d['count'];
+//         return d;
 //     });
 
-// node.append("circle")
-//     .attr("r", function(d) {
-//         // debugger
-//         return d.r;
+//     var nodes = bubble.nodes({
+//         children: data
+//     }).filter(function(d) {
+//         return !d.children;
 //     })
-//     .style("fill", function(d,i) {
-//         // debugger
-//         return color(i);
-//     });
 
-// node.append("text")
-//     .attr("dy", ".2em")
-//     .style("text-anchor", "middle")
-//     .text(function(d) {
-//         return d.data.Name.substring(0, d.r / 3);
-//     })
-//     .attr("font-family", "sans-serif")
-//     .attr("font-size", function(d){
-//         return d.r/5;
-//     })
-//     .attr("fill", "white");
+//     var bubbles = svg.append('g')
+//         .attr("transform", "translate(0,0)")
+//         .selectAll('.bubble')
+//         .data(nodes)
+//         .enter();
 
-// node.append("text")
-//     .attr("dy", "1.3em")
-//     .style("text-anchor", "middle")
-//     .text(function(d) {
-//         return d.data.Count;
-//     })
-//     .attr("font-family",  "Gill Sans", "Gill Sans MT")
-//     .attr("font-size", function(d){
-//         return d.r/5;
-//     })
-//     .attr("fill", "white");
+//     bubbles.append('circle')
+//         .attr('r',function(d){
+//             return d.r;
+//         })
+//         .attr('cx',function(d){
+//             return d.x;
+//         })
+//         .attr('cy',function(d){
+//             return d.y;
+//         })
+//         .transition()
+//             .attr('transform','translate(25,50)')
+//             .ease('elastic')
+//             .duration(3000)
+//             .style("fill", function(d) { return color(d.value); });
 
-// d3.select(self.frameElement)
-//     .style("height", diameter + "px");
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+//     bubbles.append('text')
+//         .attr('x', function(d) {
+//             return d.x
+//         })
+//         .attr('y',function(d) {
+//             return d.y + 5;
+//         })
+//         .attr('text-anchor', 'middle')
+//         .text(function(d){
+//                 // debugger
+//             return d['value'];
+//         })
+//         .style({
+//             'fill':'white',
+//             "font-family":"Helvetica Neue, Helvetica, Arial, san-serif",
+//             "font-size": "9px"
+//         })
+//         function charge(d) {
+//             return -Math.pow(d.radius, 2.0) / 8;
+//           }
+//           var force = d3.layout
+//             .force()
+//             .size([width, height])
+//             .charge(charge) // <- Using the charge function in the force layout
+//             .gravity(-0.01)
+//             .friction(0.9)
+//         force.on('tick',function(){
+//             nodes.attr("cx", function(d) { return d.x; })
+//             .attr("cy", function(d) { return d.y; });
+//         })
 
 
 
-
+//     // debugger
+// });
 
