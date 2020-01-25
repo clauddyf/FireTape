@@ -1,15 +1,64 @@
 
 
-const height = 600;
-const width = 1100;
-d3.select('#root')
-.append('svg')
-.attr('height', height)
-.attr('width', width)
-// .append('image')
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+// .append('svg:image')
+// .attr('xlink:href', d => {return d.image})
+// .attr('width',100)
+// .attr('height', 150)
+// .append('image')
+somn = 'https://api.musixmatch.com/ws/1.1/chart.tracks.get?apikey=a7dc1b3e7ae628a36a21f5b31ca159aa&page=1&page_size=$&format=json'
 // let rawData = generateRandomData();
-d3.json('http://ws.audioscrobbler.com/2.0/?method=geo.gettoptracks&country=jamaica&api_key=a0d411fa7c676669092342d66c4913d8&format=json&limit=2').then(function(tracks) {
+// https://api.deezer.com/version/service/391144/get/?parameters
+// https://api.deezer.com/2.0/chart/391144/get/?parameters
+// https://api.deezer.com/2.0/chart/0/?method=get
+// http://ws.audioscrobbler.com/2.0/?method=geo.gettoptracks&country=jamaica&api_key=a0d411fa7c676669092342d66c4913d8&format=json&limit=15
+
+// https://api.musixmatch.com/ws/1.1/?method=chart.tracks.get&country=us&api_key=a7dc1b3e7ae628a36a21f5b31ca159aa&format=json&limit=5
+d3.json('http://ws.audioscrobbler.com/2.0/?method=geo.gettoptracks&country=jamaica&api_key=a0d411fa7c676669092342d66c4913d8&format=json&limit=15').then(function(tracks) {
+    // debugger
+    const height = 650;
+    const width = 1300;
+    var svg = d3.select('#root')
+    .append('svg')
+    .attr('height', height)
+    .attr('width', width)
     const velocityDecay = 0.15;
     const forceStrength = 0.03;
     
@@ -34,30 +83,64 @@ d3.json('http://ws.audioscrobbler.com/2.0/?method=geo.gettoptracks&country=jamai
     nodes = arrTracks.map(d => {
         debugger
         return {
+            name: d.name,
+            artist: d.artist.name,
+            rank: parseInt(d["@attr"].rank),
             radius: radiusScale(d.listeners/400),
-            fill: Object.values(d.image[0])[0],
+            image: Object.values(d.image[0])[0],
             x: Math.random() * width,
             y: heightScale((d.listeners/400) )/*  Math.random() * height */
         }
     })
-    debugger
     
+    // debugger
+    // nodes = nasa.photos.map(d => {
+    //     // debugger
+    //     return {
+    //         name: d.camera.name,
+    //         roverName: d.rover.name,
+    //         rank: d.id,
+    //         radius: d.id/2000,
+    //         // rank: Object.values(d).id,
+    //         image: d.img_src
+    //     }
+    // })
+
+
+    debugger
+    var defs = svg.append('defs');
+
+    defs.selectAll('.poster-art')
+        .data(nodes)
+        .enter()
+        .append('pattern')
+        .attr('class','poster-art')
+        .attr('id', d => d.rank)
+        .attr('height','100%')
+        .attr('width','100%')
+        .attr("patternContentUnits", "objectBoundingBox")
+        .append('image')
+        .attr('height',1.5)
+        .attr('width',1)
+        .attr("preserveAspectRatio", "none")
+        .attr('xlink:href', d => d.image)    
+
+    // debugger
     bubbles = d3.select('#root svg')
         .selectAll('circle')
         .data(nodes)
         .enter()
         .append('circle')
         .attr('r', d => { return d.radius })
-        .attr('fill', d => 'blue')
+        .attr('fill', d => `url(#${d.rank})`)
         .attr('stroke', d => { return d3.rgb('blue').darker() })
         .call(d3.drag()
             .on('start', dragStarted)
             .on('drag', dragged)
             .on('end', dragEnded)
-            )
-    bubble = bubbles
-            .append('image')
-    debugger
+            ) 
+       
+        // debugger
     let forceSimulation;
     
     forceSimulation = d3.forceSimulation()
@@ -86,7 +169,7 @@ d3.json('http://ws.audioscrobbler.com/2.0/?method=geo.gettoptracks&country=jamai
         delete d.fy;
         forceSimulation.alphaTarget(0);
     }
-    
+    // debugger
     function ticked() {
         bubbles
             .attr("cx", function (d) {
