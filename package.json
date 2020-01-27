@@ -25,6 +25,7 @@
   },
   "dependencies": {
     "babel-loader": "^8.0.6",
+    "body-parser": "^1.19.0",
     "d3": "^5.14.2",
     "last-fm": "^5.2.2"
   }
