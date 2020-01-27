@@ -1,6 +1,6 @@
-// const axios = require ('axios');
+const axios = require('axios');
 
-// let deezTracks =  await axios.post('/tracks');
+let deezTracks = axios.post('/tracks');
 
 debugger
 
@@ -53,31 +53,31 @@ debugger
 // http://ws.audioscrobbler.com/2.0/?method=geo.gettoptracks&country=jamaica&api_key=a0d411fa7c676669092342d66c4913d8&format=json&limit=15
 
 // https://api.musixmatch.com/ws/1.1/?method=chart.tracks.get&country=us&api_key=a7dc1b3e7ae628a36a21f5b31ca159aa&format=json&limit=5
-d3.json(deezTracks).then(function(tracks) {
+d3.json(deezTracks).then(function (tracks) {
     debugger
     const height = 650;
     const width = 1300;
     var svg = d3.select('#root')
-    .append('svg')
-    .attr('height', height)
-    .attr('width', width)
+        .append('svg')
+        .attr('height', height)
+        .attr('width', width)
     const velocityDecay = 0.15;
     const forceStrength = 0.03;
-    
+
     let nodes;
     let bubbles;
     let radiusScale;
     let colorScale;
     let heightScale;
-    
+
     radiusScale = d3.scaleLinear()
         .domain([0, 500])
         .range([5, 30]);
-    
+
     colorScale = d3.scaleSequential()
         .domain([0, 100])
         .interpolator(d3.interpolateRainbow);
-    
+
     heightScale = d3.scaleLinear()
         .domain([0, 100])
         .range([0, height]);
@@ -88,13 +88,13 @@ d3.json(deezTracks).then(function(tracks) {
             name: d.name,
             artist: d.artist.name,
             rank: parseInt(d["@attr"].rank),
-            radius: radiusScale(d.listeners/400),
+            radius: radiusScale(d.listeners / 400),
             image: Object.values(d.image[0])[0],
             x: Math.random() * width,
-            y: heightScale((d.listeners/400) )/*  Math.random() * height */
+            y: heightScale((d.listeners / 400))/*  Math.random() * height */
         }
     })
-    
+
     // debugger
     // nodes = nasa.photos.map(d => {
     //     // debugger
@@ -116,16 +116,16 @@ d3.json(deezTracks).then(function(tracks) {
         .data(nodes)
         .enter()
         .append('pattern')
-        .attr('class','poster-art')
+        .attr('class', 'poster-art')
         .attr('id', d => d.rank)
-        .attr('height','100%')
-        .attr('width','100%')
+        .attr('height', '100%')
+        .attr('width', '100%')
         .attr("patternContentUnits", "objectBoundingBox")
         .append('image')
-        .attr('height',1.5)
-        .attr('width',1)
+        .attr('height', 1.5)
+        .attr('width', 1)
         .attr("preserveAspectRatio", "none")
-        .attr('xlink:href', d => d.image)    
+        .attr('xlink:href', d => d.image)
 
     // debugger
     bubbles = d3.select('#root svg')
@@ -140,11 +140,11 @@ d3.json(deezTracks).then(function(tracks) {
             .on('start', dragStarted)
             .on('drag', dragged)
             .on('end', dragEnded)
-            ) 
-       
-        // debugger
+        )
+
+    // debugger
     let forceSimulation;
-    
+
     forceSimulation = d3.forceSimulation()
         .nodes(nodes)
         .velocityDecay(velocityDecay)
@@ -152,8 +152,8 @@ d3.json(deezTracks).then(function(tracks) {
         .force('x', d3.forceX().strength(forceStrength).x(width / 2))
         .force('y', d3.forceY().strength(forceStrength).y(height / 2))
         .force("charge", d3.forceManyBody().strength(charge))
-    
-    
+
+
     function dragStarted(d) {
         console.log('start');
         forceSimulation.alphaTarget(0.3).restart()
@@ -164,7 +164,7 @@ d3.json(deezTracks).then(function(tracks) {
         d.fx = d3.event.x
         d.fy = d3.event.y
     }
-    
+
     function dragEnded(d) {
         console.log('end');
         delete d.fx;
@@ -181,16 +181,16 @@ d3.json(deezTracks).then(function(tracks) {
                 return d.y;
             });
     }
-    
+
     function radius(d) {
         return d.radius + 1
     }
-    
+
     function charge(d) {
         return -Math.pow(d.radius, 2) * forceStrength;
     }
-    
-    
+
+
     function generateRandomData() {
         const data = [];
         for (let i = 0; i < 200; i++) {
@@ -200,7 +200,7 @@ d3.json(deezTracks).then(function(tracks) {
         }
         return data;
     }
-    
+
 })
 
 
