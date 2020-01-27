@@ -1,6 +1,8 @@
+// const axios = require ('axios');
 
+// let deezTracks =  await axios.post('/tracks');
 
-
+debugger
 
 
 
@@ -43,7 +45,7 @@
 // .attr('width',100)
 // .attr('height', 150)
 // .append('image')
-somn = 'https://api.musixmatch.com/ws/1.1/chart.tracks.get?apikey=a7dc1b3e7ae628a36a21f5b31ca159aa&page=1&page_size=$&format=json'
+// somn = 'https://api.musixmatch.com/ws/1.1/chart.tracks.get?apikey=a7dc1b3e7ae628a36a21f5b31ca159aa&page=1&page_size=$&format=json'
 // let rawData = generateRandomData();
 // https://api.deezer.com/version/service/391144/get/?parameters
 // https://api.deezer.com/2.0/chart/391144/get/?parameters
@@ -51,8 +53,8 @@ somn = 'https://api.musixmatch.com/ws/1.1/chart.tracks.get?apikey=a7dc1b3e7ae628
 // http://ws.audioscrobbler.com/2.0/?method=geo.gettoptracks&country=jamaica&api_key=a0d411fa7c676669092342d66c4913d8&format=json&limit=15
 
 // https://api.musixmatch.com/ws/1.1/?method=chart.tracks.get&country=us&api_key=a7dc1b3e7ae628a36a21f5b31ca159aa&format=json&limit=5
-d3.json('http://ws.audioscrobbler.com/2.0/?method=geo.gettoptracks&country=jamaica&api_key=a0d411fa7c676669092342d66c4913d8&format=json&limit=15').then(function(tracks) {
-    // debugger
+d3.json(deezTracks).then(function(tracks) {
+    debugger
     const height = 650;
     const width = 1300;
     var svg = d3.select('#root')
