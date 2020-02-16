@@ -1,5 +1,5 @@
 body{
-    background-image: url("/home/claudius/Desktop/fireTape/public/jahwaterfall.jpg");
+    /* background-image: url("/home/claudius/Desktop/fireTape/public/jahwaterfall.jpg"); */
     /* background-image: radial-gradient(red, yellow, green); */
     background-repeat: no-repeat;
     /* height: 500px; */
@@ -10,3 +10,14 @@ body{
 h1 {
     color: red;
 }
+
+.hover {
+    visibility: hidden;
+    position: absolute;
+    padding: 10px;
+    color: white ;
+    z-index: 10;
+    background-color: rgba(0, 0, 0, 0.7);
+    border-radius: 5px;
+    font: 16px helvetica;
+  }
