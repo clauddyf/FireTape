@@ -5,6 +5,8 @@ Each bubble is mova ble and clickable, redirecting the user to the songs page on
 ## Overview
 In order to implement the deezer api in my application, I had to build a backend. Because Deezers api isnt cors enabled, I had to use express so that i can enable cors, make the exteranl api call,
 so that I can create a route that I could use on the frontend
+
+
 ![](https://github.com/clauddyf/FireTape/blob/master/public/Screenshot%20from%202020-02-17%2015-02-44.png)
 
 Once in the front end, I then saved the URL to a constant `const url`, and then I used the `d3.json` call to create the function that would use that data, and render it into circles.
