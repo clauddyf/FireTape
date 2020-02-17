@@ -1,5 +1,5 @@
 body{
-    /* background-image: url("/home/claudius/Desktop/fireTape/public/jahwaterfall.jpg"); */
+    background-image: url("/home/claudius/Desktop/fireTape/public/grayscale-photography-of-person-using-dj-controller-860707.jpg");
     /* background-image: radial-gradient(red, yellow, green); */
     background-repeat: no-repeat;
     /* height: 500px; */
@@ -8,7 +8,12 @@ body{
 }
 
 h1 {
-    color: red;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    color:white;
+    font-family: 'Boogaloo', cursive;
+    font-size: 81px;
 }
 
 .hover {
@@ -20,4 +25,19 @@ h1 {
     background-color: rgba(0, 0, 0, 0.7);
     border-radius: 5px;
     font: 16px helvetica;
-  }
+}
+
+.fireHeader{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    color: white;
+}
+
+span{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    color:white;
+    font-family: 'Boogaloo', cursive;
+}

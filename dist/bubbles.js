@@ -38,6 +38,7 @@ d3.json(url)
                 rank: (d.position),
                 radius: radiusScale(d.rank /700 ),
                 image: d.album.cover_medium,
+                link: d.link,
                 x: Math.random() * width,
                 y: heightScale((d.rank / 400))/*  Math.random() * height */
             }
@@ -56,7 +57,7 @@ d3.json(url)
         .style("z-index", "10")
         .style("padding", "10px")
         .style("color", "white")
-        debugger
+        // debugger
 
         
         var defs = svg.append('defs');
@@ -76,7 +77,7 @@ d3.json(url)
             .attr("preserveAspectRatio", "none")
             .attr('xlink:href', d => d.image)
     
-        debugger
+        // debugger
         bubbles = d3.select('#root svg')
             .selectAll('circle')
             .data(nodes)
@@ -95,6 +96,11 @@ d3.json(url)
                     debugger
                     return hoverText.style('visibility','visible');
             })
+            .on("mousemove", () => {
+                return hoverText
+                  .style("top", (d3.event.pageY+10)+"px")
+                  .style("left",(d3.event.pageX+10)+"px");
+              })
             .on('mouseout',function(){
                 return hoverText.style('visibility','hidden');
             })
@@ -103,6 +109,11 @@ d3.json(url)
             .on('drag', dragged)
             .on('end', dragEnded)
             )
+            .on('click', d => {
+                debugger
+                if (d3.event.defaultPrevented) return;
+                  window.open(d.link,'_blank');
+              })
             
             let forceSimulation;
             
@@ -113,52 +124,7 @@ d3.json(url)
             .force('x', d3.forceX().strength(forceStrength).x(width / 2))
             .force('y', d3.forceY().strength(forceStrength).y(height / 2))
             .force("charge", d3.forceManyBody().strength(charge))
-            // .on('onmouseover', d => {
-            //     return hoverText
-            //       .transition()
-            //       .duration(200)
-            //       return hoverText
-            //       .style('opacity', 0.9)
-            //       .html((
-            //         `Track: ${d.name}<br/>
-            //          Artist: $${d.artist}M<br/>
-            //          Hotness Rank: ${d.rank} (based on weekend)<br/>`
-            //       ))
-            //       .style('left', d3.event.pageX + 'px')
-            //       .style('top', d3.event.pageY - 28 + 'px');
-            //   })
-            //   .on('onmouseout', () => {
-            //    return hoverText
-            //       .transition()
-            //       .duration(500)
-            //       .style('opacity', 0);
-            //   })
-            
-            
-            
-            
-            // .on("onmouseover", function (d,i){ //mouseover hoverText
-                // hoverText.html(
-                //   `Track: ${d.name}<br/>
-                //    Artist: $${d.artist}M<br/>
-                //    Hotness Rank: ${d.rank} (based on weekend)<br/>`
-                // );
-            //     hoverText.style("visibility", "visible");
-            //   })
-            // .on("onmousemove", () => {
-            //     return hoverText
-            //       .style("top", (d3.event.pageY+10)+"px")
-            //       .style("left",(d3.event.pageX+10)+"px");
-            //   })
-            // .on("onmouseout", () => hoverText.style("visibility", "hidden"))
-            // .call(d3.drag()
-            //     .on('start', dragStarted)
-            //     .on('drag', dragged)
-            //     .on('end', dragEnded)
-            // )
-            
-            // debugger
-    
+         
     
         function dragStarted(d) {
             console.log('start');
@@ -166,7 +132,6 @@ d3.json(url)
         }
         function dragged(d) {
             console.log('drag');
-            /* bubbles.attr("cx", d.x = d3.event.x).attr("cy", d.y = d3.event.y); */
             d.fx = d3.event.x
             d.fy = d3.event.y
         }
