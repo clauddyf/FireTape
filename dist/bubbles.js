@@ -19,7 +19,7 @@ d3.json(url)
         let heightScale;
     
         radiusScale = d3.scaleLinear()
-            .domain([0, 500])
+            .domain([0, 400])
             .range([5, 30]);
     
         colorScale = d3.scaleSequential()
@@ -31,12 +31,12 @@ d3.json(url)
             .range([0, height]);
         arrTracks = tracks.data
         nodes = arrTracks.map(d => {
-            // debugger
+            debugger
             return {
                 name: d.title,
                 artist: d.artist.name,
                 rank: (d.position),
-                radius: radiusScale(d.rank /700 ),
+                radius: radiusScale(d.rank /650 ),
                 image: d.album.cover_medium,
                 link: d.link,
                 x: Math.random() * width,
