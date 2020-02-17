@@ -1,27 +1,26 @@
 # FireTape
 FireTape is an application that request the top music tracks in the United States from the external api, Deezer.com, and renders an interactive bubble visualization of those songs.
 Each bubble is mova ble and clickable, redirecting the user to the songs page on the Deezer website
-
+![](https://github.com/clauddyf/FireTape/blob/master/public/Screenshot%20from%202020-02-17%2015-32-18.png)
 ## Overview
 In order to implement the deezer api in my application, I had to build a backend. Because Deezers api isnt cors enabled, I had to use express so that i can enable cors, make the exteranl api call,
 so that I can create a route that I could use on the frontend
-
+![](https://github.com/clauddyf/FireTape/blob/master/public/Screenshot%20from%202020-02-17%2015-02-44.png)
 
 Once in the front end, I then saved the URL to a constant `const url`, and then I used the `d3.json` call to create the function that would use that data, and render it into circles.
-
-
+![](https://github.com/clauddyf/FireTape/blob/master/public/Screenshot%20from%202020-02-17%2015-03-06.png)
 
 The trickiest part of using the D3 library is creating the nodes. You have to carefully map through each json object, and assign their properties to a variable, that you will later use to create the bubbles
-
+![](https://github.com/clauddyf/FireTape/blob/master/public/Screenshot%20from%202020-02-17%2015-03-24.png)
 
 
 Once the nodes are created, I then selected the root scalable vector graphic, selctedall circles, appended the nodes inside of these circles, and then manipulated the circle `radius` and `fill` based on 
 the nodes properties
-
+![](https://github.com/clauddyf/FireTape/blob/master/public/Screenshot%20from%202020-02-17%2015-03-42.png)
 
 Lastly, I had to create a `forceSimulation` function that used `velocityDecay` to force the x and y position of the node based on the users move of the mouse on the svg.
 This function was then used in three drag functions, in order to append it to each circle.
-
+![](https://github.com/clauddyf/FireTape/blob/master/public/Screenshot%20from%202020-02-17%2015-03-56.png)
 
 
 
@@ -36,3 +35,8 @@ This function was then used in three drag functions, in order to append it to ea
 * Kazam for Ubuntu screen record
 * GiphyCapture for gif production
 * Pexels.com(captivating photo)
+
+## Future Implementation
+* Correct the `mouseover` and `mousemove` functions
+* shape the size of the bubbles using some other numeric value provided y the external api
+* Have users be able to sort by genre
