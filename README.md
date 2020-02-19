@@ -9,6 +9,43 @@ so that I can create a route that I could use on the frontend
 
 ![](https://github.com/clauddyf/FireTape/blob/master/public/Screenshot%20from%202020-02-17%2015-02-44.png)
 
+
+## Getting Started: How to play locally
+If you do not have git and/or node.js installed, or you are unsure,please click on both links and install the git and node package
+  * Git download url: https://git-scm.com/book/en/v2/Getting-Started-Installing-Git
+  * Node download url: https://nodejs.org/en/download/
+1. Create folder in Desktop
+
+ `cd Desktop`
+ 
+ `mkdir Firetape`
+ 
+ `cd FireTape`
+
+2. Clone the project or download zip
+
+  `git clone https://github.com/clauddyf/FireTape.git`
+  
+3. Get into project folder
+
+ `cd FireTape`
+  
+3. Install dependencies
+
+ `npm install`
+ 
+ `cd api`
+ 
+ `npm install`
+ 
+ 
+4. Run the server
+
+ `npm start`
+ 
+5. Copy `index.html` file-path in `dist` folder into browser window
+
+
 Once in the front end, I then saved the URL to a constant `const url`, and then I used the `d3.json` call to create the function that would use that data, and render it into circles.
 
 ![](https://github.com/clauddyf/FireTape/blob/master/public/Screenshot%20from%202020-02-17%2015-03-06.png)
