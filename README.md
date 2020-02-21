@@ -1,5 +1,5 @@
 # FireTape
-FireTape is an application that request the top music tracks in the United States from the external api, Deezer.com, and renders an interactive bubble visualization of those songs.
+FireTape is an application that request the top music tracks in the United States from the external api, Deezer.com, and renders an interactive bubble visualization using D3.js.
 Each bubble is mova ble and clickable, redirecting the user to the songs page on the Deezer website
 ![](https://github.com/clauddyf/FireTape/blob/master/public/Screenshot%20from%202020-02-17%2015-32-18.png)
 
