@@ -84,3 +84,4 @@ This function was then used in three drag functions, in order to append it to ea
 * Correct the `mouseover` and `mousemove` functions
 * shape the size of the bubbles using some other numeric value provided y the external api
 * Have users be able to sort by genre
+* https://www.codementor.io/@kingidee/build-an-anonymous-chat-app-with-react-react-bootstrap-wbn8e04t3
